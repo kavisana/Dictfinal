@@ -1,31 +1,78 @@
-#user interface to the main menu
 import data
 import functions
+
 def show_main_menu():
-  while True:
-    print("Solomon diner") #edit to show your name
-    print("__________")
-    print('N for a new order')
-    print('X for close orders and print the check')
-    print('Q for quit')
-    user_menu_choice = input('Your choice: ')
-    if user_menu_choice in 'Qq':
-      break
-    elif user_menu_choice in 'Xx':
-      print('This option prints the list of items ordered, extended price, total, Taxes, and Grand total ')
-    elif user_menu_choice in 'Nn':
-      print('New order')
-      make_order(user_menu_choice.upper())  #calls a function for adding to the orders
+    while True:
+        print("Keerthana Sai Avisana")
+        print("__________")
+        print('N for a new order')
+        print('X for close orders and print the check')
+        print('M for manager options')
+        print('Q for quit')
+        user_menu_choice = input('Your choice: ').upper()
+        
+        if user_menu_choice == 'Q':
+            break
+        elif user_menu_choice == 'X':
+            close_order(user_menu_choice)
+        elif user_menu_choice == 'N':
+            make_order(user_menu_choice)
+        elif user_menu_choice == 'M':
+            show_manager_menu()
+        else:
+            print("Invalid choice. Please choose N, X, M, or Q.")
 
 def make_order(menu_choice):
-  print('Functionality for menu choice ', menu_choice)
-  user_selection = functions.get_item_number()
-  item_code, quantity = user_selection.split()
-  print(functions.get_item_information(item_code))
+    print('Functionality for menu choice', menu_choice)
+    
+    orders = []  # List to store items for the current order
+    
+    while True:
+        # Get the customer input for item and quantity
+        user_selection = input("Enter item code and quantity (e.g., '30 BURGER'): ").upper()
+        
+        try:
+            # Split the input into quantity and item code
+            quantity, item_code = user_selection.split()
+            quantity = int(quantity)  # Ensure quantity is a valid integer
+        except ValueError:
+            print("Invalid input format. Please enter in the format 'quantity ITEM_CODE'.")
+            continue
+        
+        # Verify if the item is on the menu
+        item_name, item_price, stock = functions.get_item_information(item_code)
+        
+        if item_name:
+            print(f"Item found: {item_name}, Unit Price: ${item_price:.2f}, Stock: {stock}")
+            
+            # Check if the requested quantity is available
+            if stock == "Unlimited" or quantity <= stock:
+                total_price = item_price * quantity
+                orders.append((item_name, quantity, total_price))
+                
+                # Update the stock
+                if stock != "Unlimited":
+                    for item in data.menu_items_dict:
+                        if item['code'] == item_code:
+                            item['stock'] -= quantity
+                            break
+                
+                print(f"Order confirmed: {quantity} x {item_name}, Total Price: ${total_price:.2f}")
+            else:
+                print(f"Sorry, only {stock} units of {item_name} are available.")
+        else:
+            print("Invalid item code. Please try again.")
+        
+        more_items = input("Add more items? (Y/N): ").upper()
+        if more_items != 'Y':
+            break
+
+    print(f"Order Summary: {orders}")
 
 def close_order(menu_choice):
-  print('Functionality for menu choice ', menu_choice)
-
+    print('Functionality for menu choice', menu_choice)
+    # Print the list of items ordered, extended price, total, taxes, and grand total
+    # To be implemented with more detailed calculations
 
 def show_manager_menu():
     while True:
@@ -109,14 +156,6 @@ def view_menu():
         stock_info = item.get('stock', 'Unlimited')
         print(f"Code: {item['code']}, Name: {item['name']}, Price: ${item['price']:.2f}, Stock: {stock_info}")
     print("\n")
+
 if __name__ == '__main__':
-    #initialize the lists
-    drinks = []
-    appetizers = []
-    salads = []
-    entrees = []
-    dessert= []
-    #print(functions.get_item_information('D1'))
     show_main_menu()
-
-
