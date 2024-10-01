@@ -1,4 +1,5 @@
 #use this list of menu items
+import random
 menu_items = [
 'D1 ​​SODA 3',
 'D2 ​​LEMONADE 3',
@@ -26,4 +27,23 @@ appetizer_items = ['A1', 'A2',  'A3', 'A4', 'A5']
 salad_items = ['S1', 'S2', 'S3']
 entree_items = ['E1', 'E2',  'E3', 'E4']
 dessert_items =['T1', 'T2',  'T3', 'T4']
+menu_items_dict = []
+
+for item in menu_items:
+    item_split = item.split()
+    code = item_split[0]
+    name = "_".join(item_split[1:-1])
+    price = float(item_split[-1])
+
+    item_dict = {
+        'code': code,
+        'name': name,
+        'price': price
+    }
+
+    if code not in drink_items:
+        stock = random.randint(25, 50)
+        item_dict['stock'] = stock
+
+    menu_items_dict.append(item_dict)
 all_items = drink_items + appetizer_items + salad_items + entree_items + dessert_items
